@@ -28,6 +28,20 @@ export const PageHome = () =>
         }
     };
 
+    const createNft = async () => {
+        if (!currAcct) {
+            return;
+        }
+        const resp = await demoClient.createNft({
+            sender: currAcct.address,
+            name: "My NFT",
+            imageUrl: "https://i.pinimg.com/564x/30/cc/bb/30ccbb7afbc9919f358837a59871910c.jpg",
+            description: "This is a description of my NFT",
+            dryRun: true,
+        });
+        console.log(resp);
+    };
+
     return <>
         {header}
 
@@ -68,7 +82,7 @@ export const PageHome = () =>
 
                 <div className="card compact">
                     <div className="card-title">
-                        Wallet
+                        Create NFT
                     </div>
                     {!currAcct
                         ? <Btn onClick={() => Promise.resolve(openConnectModal())}>
@@ -81,6 +95,11 @@ export const PageHome = () =>
                             </Btn>
                         </>
                     }
+                    {currAcct && <>
+                        <Btn onClick={createNft}>
+                            Create NFT
+                        </Btn>
+                    </>}
                 </div>
 
             </div>

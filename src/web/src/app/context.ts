@@ -6,7 +6,6 @@ import { SupportedNetwork } from "./config";
 
 export type AppContextType = {
     network: SupportedNetwork; setNetwork: (network: SupportedNetwork) => void;
-    isWorking: boolean; setIsWorking: (isWorking: boolean) => void;
     openConnectModal: () => void;
     header: ReactNode;
     demoClient: DemoClient;

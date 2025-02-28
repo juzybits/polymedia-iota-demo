@@ -35,8 +35,8 @@ const AppIotaProviders = () =>
     const [ network, setNetwork ] = useState<SupportedNetwork>(defaultNetwork);
     return (
         <QueryClientProvider client={queryClient}>
-            <IotaClientProvider networks={networkConfig} defaultNetwork={network}>
-                <WalletProvider>
+            <IotaClientProvider networks={networkConfig} network={network}>
+                <WalletProvider autoConnect={true}>
                     <App network={network} setNetwork={setNetwork} />
                 </WalletProvider>
             </IotaClientProvider>
@@ -54,7 +54,6 @@ const App = ({
 {
     // === state ===
 
-    const [ isWorking, setIsWorking ] = useState(false);
     const [ showConnectModal, setShowConnectModal ] = useState(false);
 
     const iotaClient = useIotaClient();
@@ -69,7 +68,6 @@ const App = ({
 
     const appContext: AppContextType = {
         network, setNetwork,
-        isWorking, setIsWorking,
         openConnectModal: () => { setShowConnectModal(true); },
         header: <Header />,
         demoClient,
@@ -77,25 +75,16 @@ const App = ({
 
     // === html ===
 
-    const layoutClasses: string[] = [];
-    if (isWorking) {
-        layoutClasses.push("disabled");
-    }
-
     return (
     <AppContext.Provider value={appContext}>
-        <div id="layout" className={layoutClasses.join(" ")}>
-
+        <div id="layout">
             <Outlet /> {/* Loads a Page*.tsx */}
-
             <ConnectModal
                 trigger={<></>}
                 open={showConnectModal}
                 onOpenChange={isOpen => { setShowConnectModal(isOpen); }}
             />
-
             <Toaster position="top-center" containerStyle={{ marginTop: 23 }} />
-
         </div>
     </AppContext.Provider>
     );

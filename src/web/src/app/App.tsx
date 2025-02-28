@@ -60,10 +60,11 @@ const App = ({
     const { mutateAsync: walletSignTx } = useSignTransaction();
 
     const demoClient = useMemo(() => {
-        return new DemoClient({
+        return new DemoClient(
             iotaClient,
-            signTx: (tx) => walletSignTx({ transaction: tx }),
-        });
+            (transaction) => walletSignTx({ transaction }),
+            "0xd99e0e35f8814ea63570dfd50e07aba2f3a9b1fc180b83f9d99860ebfce4ac40",
+        );
     }, [iotaClient, walletSignTx]);
 
     const appContext: AppContextType = {

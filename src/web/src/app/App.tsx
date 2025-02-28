@@ -7,11 +7,11 @@ import { BrowserRouter, Link, Outlet, Route, Routes } from "react-router-dom";
 
 import { DemoClient } from "@polymedia/iota-demo-sdk";
 
-import "../styles/App.less";
 import { defaultNetwork, networkConfig, SupportedNetwork } from "./config";
 import { AppContext, AppContextType, useAppContext } from "./context";
 import { PageHome } from "../pages/PageHome";
 import { PageNotFound } from "../pages/PageNotFound";
+import "../styles/App.less";
 
 // ==== router ====
 

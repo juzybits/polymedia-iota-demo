@@ -1,14 +1,18 @@
+import { useCurrentAccount, useDisconnectWallet } from "@iota/dapp-kit";
 import { IotaSystemStateSummary } from "@iota/iota-sdk/client";
+import { IOTA_DECIMALS } from "@iota/iota-sdk/utils";
 import { useState } from "react";
+import { supportedNetworks } from "../app/config";
 import { useAppContext } from "../app/context";
 import { Btn } from "../comp/buttons";
-import { IOTA_DECIMALS } from "@iota/iota-sdk/utils";
 import { NetworkRadioSelector } from "../comp/selectors";
-import { supportedNetworks } from "../app/config";
 
 export const PageHome = () =>
 {
-    const { header, network, setNetwork, demoClient } = useAppContext();
+    const currAcct = useCurrentAccount();
+    const { mutate: disconnect } = useDisconnectWallet();
+
+    const { header, network, setNetwork, openConnectModal, demoClient } = useAppContext();
 
     const [ systemState, setSystemState ] = useState<IotaSystemStateSummary | null>(null);
     const [ error, setError ] = useState<string | null>(null);
@@ -60,6 +64,23 @@ export const PageHome = () =>
                             onSwitch={setNetwork}
                         />
                     </div>
+                </div>
+
+                <div className="card compact">
+                    <div className="card-title">
+                        Wallet
+                    </div>
+                    {!currAcct
+                        ? <Btn onClick={() => Promise.resolve(openConnectModal())}>
+                            Connect
+                        </Btn>
+                        : <>
+                            <div>Connected: <span className="address">{currAcct.address}</span></div>
+                            <Btn onClick={() => Promise.resolve(disconnect())}>
+                                DISCONNECT
+                            </Btn>
+                        </>
+                    }
                 </div>
 
             </div>

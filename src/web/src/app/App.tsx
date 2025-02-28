@@ -1,0 +1,118 @@
+import { ConnectModal, IotaClientProvider, useIotaClient, useSignTransaction, WalletProvider } from "@iota/dapp-kit";
+import "@iota/dapp-kit/dist/index.css";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { useMemo, useState } from "react";
+import { Toaster } from "react-hot-toast";
+import { BrowserRouter, Link, Outlet, Route, Routes } from "react-router-dom";
+
+import { DemoClient } from "@polymedia/iota-demo-sdk";
+
+import "../styles/App.less";
+import { defaultNetwork, networkConfig, SupportedNetwork } from "./config";
+import { AppContext, AppContextType, useAppContext } from "./context";
+import { PageHome } from "../pages/PageHome";
+import { PageNotFound } from "../pages/PageNotFound";
+
+// ==== router ====
+
+export const AppRouter = () =>
+(
+    <BrowserRouter>
+        <Routes>
+            <Route path="/" element={<AppIotaProviders />} >
+                <Route index element={<PageHome />} />
+                <Route path="*" element={<PageNotFound />} />
+            </Route>
+        </Routes>
+    </BrowserRouter>
+);
+
+// ==== iota providers ====
+
+const queryClient = new QueryClient();
+const AppIotaProviders = () =>
+{
+    const [ network, setNetwork ] = useState<SupportedNetwork>(defaultNetwork);
+    return (
+        <QueryClientProvider client={queryClient}>
+            <IotaClientProvider networks={networkConfig} defaultNetwork={network}>
+                <WalletProvider>
+                    <App network={network} setNetwork={setNetwork} />
+                </WalletProvider>
+            </IotaClientProvider>
+        </QueryClientProvider>
+    );
+};
+
+// ==== app ====
+
+const App = ({
+    network, setNetwork,
+}: {
+    network: SupportedNetwork; setNetwork: (network: SupportedNetwork) => void;
+}) =>
+{
+    // === state ===
+
+    const [ isWorking, setIsWorking ] = useState(false);
+    const [ showConnectModal, setShowConnectModal ] = useState(false);
+
+    const iotaClient = useIotaClient();
+    const { mutateAsync: walletSignTx } = useSignTransaction();
+
+    const demoClient = useMemo(() => {
+        return new DemoClient({
+            iotaClient,
+            signTx: (tx) => walletSignTx({ transaction: tx }),
+        });
+    }, [iotaClient, walletSignTx]);
+
+    const appContext: AppContextType = {
+        network, setNetwork,
+        isWorking, setIsWorking,
+        openConnectModal: () => { setShowConnectModal(true); },
+        header: <Header />,
+        demoClient,
+    };
+
+    // === html ===
+
+    const layoutClasses: string[] = [];
+    if (isWorking) {
+        layoutClasses.push("disabled");
+    }
+
+    return (
+    <AppContext.Provider value={appContext}>
+        <div id="layout" className={layoutClasses.join(" ")}>
+
+            <Outlet /> {/* Loads a Page*.tsx */}
+
+            <ConnectModal
+                trigger={<></>}
+                open={showConnectModal}
+                onOpenChange={isOpen => { setShowConnectModal(isOpen); }}
+            />
+
+            <Toaster position="top-center" containerStyle={{ marginTop: 23 }} />
+
+        </div>
+    </AppContext.Provider>
+    );
+};
+
+/* One-off components */
+
+const Header = () =>
+{
+    const { network } = useAppContext();
+    return (
+    <header>
+        <div className="header-item">
+            <Link to="/">
+                IOTA DEMO
+                <span className="header-network-label">{network}</span>
+            </Link>
+        </div>
+    </header>);
+};

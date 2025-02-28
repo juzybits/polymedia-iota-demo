@@ -1,6 +1,16 @@
-import { createContext, useContext } from "react";
+import { createContext, ReactNode, useContext } from "react";
 
-import { AppContextType } from "./App";
+import { DemoClient } from "@polymedia/iota-demo-sdk";
+
+import { SupportedNetwork } from "./config";
+
+export type AppContextType = {
+    network: SupportedNetwork; setNetwork: (network: SupportedNetwork) => void;
+    isWorking: boolean; setIsWorking: (isWorking: boolean) => void;
+    openConnectModal: () => void;
+    header: ReactNode;
+    demoClient: DemoClient;
+};
 
 export const AppContext = createContext<AppContextType | null>(null);
 

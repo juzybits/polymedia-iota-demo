@@ -1,8 +1,5 @@
 import { ReactNode, useState } from "react";
 
-/**
- * A button component.
- */
 export const Btn = ({
     onClick,
     children,

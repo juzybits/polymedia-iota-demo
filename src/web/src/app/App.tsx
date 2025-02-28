@@ -7,7 +7,7 @@ import { BrowserRouter, Link, Outlet, Route, Routes } from "react-router-dom";
 
 import { DemoClient } from "@polymedia/iota-demo-sdk";
 
-import { defaultNetwork, networkConfig, SupportedNetwork } from "./config";
+import { defaultNetwork, networkConfig, packageIds, SupportedNetwork } from "./config";
 import { AppContext, AppContextType, useAppContext } from "./context";
 import { PageHome } from "../pages/PageHome";
 import { PageNotFound } from "../pages/PageNotFound";
@@ -47,9 +47,11 @@ const AppIotaProviders = () =>
 // ==== app ====
 
 const App = ({
-    network, setNetwork,
+    network,
+    setNetwork,
 }: {
-    network: SupportedNetwork; setNetwork: (network: SupportedNetwork) => void;
+    network: SupportedNetwork;
+    setNetwork: (network: SupportedNetwork) => void;
 }) =>
 {
     // === state ===
@@ -63,9 +65,9 @@ const App = ({
         return new DemoClient(
             iotaClient,
             (transaction) => walletSignTx({ transaction }),
-            "0xd99e0e35f8814ea63570dfd50e07aba2f3a9b1fc180b83f9d99860ebfce4ac40",
+            packageIds[network],
         );
-    }, [iotaClient, walletSignTx]);
+    }, [iotaClient, walletSignTx, network]);
 
     const appContext: AppContextType = {
         network, setNetwork,
@@ -90,8 +92,6 @@ const App = ({
     </AppContext.Provider>
     );
 };
-
-/* One-off components */
 
 const Header = () =>
 {

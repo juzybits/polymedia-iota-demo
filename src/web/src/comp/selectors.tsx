@@ -43,9 +43,6 @@ export function RadioSelector<T extends string>({
     );
 }
 
-/**
- * A radio button menu to select a Sui network and save the choice to local storage.
- */
 export function NetworkRadioSelector(props: {
     selectedNetwork: SupportedNetwork;
     supportedNetworks: readonly SupportedNetwork[];

@@ -11,10 +11,17 @@ export const PageHome = () =>
     const { header, network, setNetwork, demoClient } = useAppContext();
 
     const [ systemState, setSystemState ] = useState<IotaSystemStateSummary | null>(null);
+    const [ error, setError ] = useState<string | null>(null);
 
     const foo = async () => {
-        const state = await demoClient.iotaClient.getLatestIotaSystemState();
-        setSystemState(state);
+        setError(null);
+        setSystemState(null);
+        try {
+            const state = await demoClient.iotaClient.getLatestIotaSystemState();
+            setSystemState(state);
+        } catch (error) {
+            setError("Something went wrong (check console)");
+        }
     };
 
     return <>
@@ -29,6 +36,7 @@ export const PageHome = () =>
                     </div>
                     <div className="card-desc">
                         <Btn onClick={foo}>Get state</Btn>
+                        {error && <p className="error">{error}</p>}
                         {systemState && <>
                             <p>Epoch: {systemState.epoch}</p>
                             <p>Epoch duration: {(Number(systemState.epochDurationMs) / 1000 / 60)} minutes</p>

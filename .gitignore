@@ -1,0 +1,15 @@
+.DS_Store
+
+# JavaScript
+.env.development.local
+.turbo
+.wrangler
+*.tsbuildinfo
+dist
+node_modules
+
+# IOTA
+.coverage_map.mvcov
+.trace
+build
+traces

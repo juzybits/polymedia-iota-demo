@@ -2,6 +2,7 @@ import { DevInspectTransactionBlockParams, IotaClient, IotaTransactionBlockRespo
 import { SignatureWithBytes } from "@iota/iota-sdk/cryptography";
 import { Transaction } from "@iota/iota-sdk/transactions";
 
+import { Nft, objResToNft } from "./demo-structs.js";
 import { SignTx } from "./lib.js";
 
 /**
@@ -49,6 +50,22 @@ export class DemoClient
             dryRun: arg.dryRun,
         });
         return resp;
+    }
+
+    // === data fetching ===
+
+    public async fetchOwnedNfts(sender: string): Promise<Nft[]> {
+        const resp = await this.iotaClient.getOwnedObjects({
+            owner: sender,
+            filter: {
+                StructType: `${this.pkgId}::nft::Nft`,
+            },
+            options: {
+                showContent: true,
+                showDisplay: true,
+            },
+        });
+        return resp.data.map(objResToNft);
     }
 
     // === transaction helpers ===

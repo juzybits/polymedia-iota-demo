@@ -6,7 +6,7 @@ export const InputText = ({
     label,
 }: {
     value: string;
-    onChange: ChangeEventHandler<HTMLInputElement>
+    onChange: ChangeEventHandler<HTMLInputElement>;
     label: string;
 }) =>
 {
@@ -22,5 +22,5 @@ export const InputText = ({
                 autoComplete="off"
             />
         </div>
-    </>
+    </>;
 };

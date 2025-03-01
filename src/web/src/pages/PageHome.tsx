@@ -1,15 +1,20 @@
 import { useCurrentAccount, useDisconnectWallet } from "@iota/dapp-kit";
 import { IotaSystemStateSummary } from "@iota/iota-sdk/client";
 import { IOTA_DECIMALS } from "@iota/iota-sdk/utils";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { toast } from "react-hot-toast";
 
+import { makeIotaExplorerUrl, shortenAddress } from "@polymedia/iota-demo-sdk";
+
+import { Nft } from "../../../sdk/dist/esm/demo-structs";
 import { supportedNetworks } from "../app/config";
 import { useAppContext } from "../app/context";
 import { Btn } from "../comp/buttons";
 import { Header } from "../comp/header";
-import { NetworkRadioSelector } from "../comp/selectors";
 import { InputText } from "../comp/inputs";
+import { NetworkRadioSelector } from "../comp/selectors";
+import { LinkExternal } from "../comp/links";
+
 export const PageHome = () =>
 {
     return <>
@@ -19,6 +24,7 @@ export const PageHome = () =>
                 <CardSystemState />
                 <CardNetwork />
                 <CardCreateNft />
+                <CardNftList />
             </div>
         </div>
     </>;
@@ -85,6 +91,7 @@ const CardNetwork = () =>
 
 const CardCreateNft = () =>
 {
+    // === state ===
     const currAcct = useCurrentAccount();
     const { mutate: disconnect } = useDisconnectWallet();
 
@@ -92,6 +99,8 @@ const CardCreateNft = () =>
 
     const [ name, setName ] = useState("Demo NTF");
     const [ imageUrl, setImageUrl ] = useState("https://i.pinimg.com/564x/30/cc/bb/30ccbb7afbc9919f358837a59871910c.jpg");
+
+    // === functions ===
 
     const createNft = async () => {
         if (!currAcct) {
@@ -106,6 +115,8 @@ const CardCreateNft = () =>
         console.log(resp);
         toast.success("Success");
     };
+
+    // === html ===
 
     return (
         <div className="card compact">
@@ -134,6 +145,67 @@ const CardCreateNft = () =>
             : <Btn onClick={() => Promise.resolve(openConnectModal())}>
                 Connect
             </Btn>}
+        </div>
+    );
+};
+
+const CardNftList = () =>
+{
+    // === state ===
+
+    const currAcct = useCurrentAccount();
+
+    const { demoClient, network } = useAppContext();
+    const [ nfts, setNfts ] = useState<Nft[]>([]);
+
+    // === functions ===
+
+    useEffect(() => {
+        const fetchNfts = async () => {
+            if (!currAcct) {
+                setNfts([]);
+            } else {
+                const nfts = await demoClient.fetchOwnedNfts(currAcct.address);
+                setNfts(nfts);
+            }
+        };
+        fetchNfts();
+    }, [ demoClient, currAcct ]);
+
+    // === html ===
+
+    if (!currAcct) {
+        return null;
+    }
+
+    return (
+        <div className="page-section">
+            <div className="section-title center-text center-element">
+                Your NFTs
+            </div>
+
+            {nfts.map((nft) => (
+                <div className="card compact" key={nft.id}>
+                    <div className="item">
+                        <div className="card-title">
+                            <h3>{nft.name}</h3>
+                        </div>
+                        <div className="item-img">
+                            <LinkExternal href={makeIotaExplorerUrl(network, "object", nft.id)}>
+                                <img src={nft.imageUrl} alt={nft.name} />
+                            </LinkExternal>
+                        </div>
+                    </div>
+                </div>
+            ))}
+
+            {nfts.length === 0 &&
+            <div className="card compact">
+                <div className="card-desc center-text">
+                    No NFTs found in your wallet
+                </div>
+            </div>}
+
         </div>
     );
 };

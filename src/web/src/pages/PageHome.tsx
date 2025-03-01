@@ -4,7 +4,7 @@ import { IOTA_DECIMALS } from "@iota/iota-sdk/utils";
 import { useEffect, useState } from "react";
 import { toast } from "react-hot-toast";
 
-import { makeIotaExplorerUrl, shortenAddress } from "@polymedia/iota-demo-sdk";
+import { makeIotaExplorerUrl } from "@polymedia/iota-demo-sdk";
 
 import { Nft } from "../../../sdk/dist/esm/demo-structs";
 import { supportedNetworks } from "../app/config";
@@ -12,19 +12,21 @@ import { useAppContext } from "../app/context";
 import { Btn } from "../comp/buttons";
 import { Header } from "../comp/header";
 import { InputText } from "../comp/inputs";
-import { NetworkRadioSelector } from "../comp/selectors";
 import { LinkExternal } from "../comp/links";
+import { NetworkRadioSelector } from "../comp/selectors";
 
 export const PageHome = () =>
 {
+    const [ lastCreateTx, setLastCreateTx ] = useState<string | null>(null);
+
     return <>
         <Header />
         <div id="page-home" className="page-regular">
             <div className="page-content">
                 <CardSystemState />
                 <CardNetwork />
-                <CardCreateNft />
-                <CardNftList />
+                <CardCreateNft onSuccess={(digest: string) => setLastCreateTx(digest)} />
+                <CardNftList lastCreateTx={lastCreateTx} />
             </div>
         </div>
     </>;
@@ -89,9 +91,14 @@ const CardNetwork = () =>
     );
 };
 
-const CardCreateNft = () =>
+const CardCreateNft = ({
+    onSuccess,
+}: {
+    onSuccess: (digest: string) => void;
+}) =>
 {
     // === state ===
+
     const currAcct = useCurrentAccount();
     const { mutate: disconnect } = useDisconnectWallet();
 
@@ -114,6 +121,7 @@ const CardCreateNft = () =>
         });
         console.log(resp);
         toast.success("Success");
+        onSuccess(resp.digest);
     };
 
     // === html ===
@@ -149,7 +157,11 @@ const CardCreateNft = () =>
     );
 };
 
-const CardNftList = () =>
+const CardNftList = ({
+    lastCreateTx,
+}: {
+    lastCreateTx: string | null;
+}) =>
 {
     // === state ===
 
@@ -161,17 +173,21 @@ const CardNftList = () =>
     // === functions ===
 
     useEffect(() => {
-        const fetchNfts = async () => {
-            if (!currAcct) {
-                setNfts([]);
-            } else {
-                const nfts = await demoClient.fetchOwnedNfts(currAcct.address);
-                setNfts(nfts);
-            }
-        };
         fetchNfts();
-    }, [ demoClient, currAcct ]);
+    }, [ demoClient, currAcct, lastCreateTx ]);
 
+    const fetchNfts = async () => {
+        if (!currAcct) {
+            setNfts([]);
+            return;
+        }
+        lastCreateTx && await demoClient.iotaClient.waitForTransaction({
+            digest: lastCreateTx,
+            pollInterval: 150,
+        });
+        const nfts = await demoClient.fetchOwnedNfts(currAcct.address);
+        setNfts(nfts);
+    };
     // === html ===
 
     if (!currAcct) {

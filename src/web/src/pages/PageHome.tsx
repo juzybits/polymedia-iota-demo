@@ -1,3 +1,5 @@
+// some examples for how to read and write from the chain
+
 import { useCurrentAccount, useDisconnectWallet } from "@iota/dapp-kit";
 import { IotaSystemStateSummary } from "@iota/iota-sdk/client";
 import { IOTA_DECIMALS } from "@iota/iota-sdk/utils";

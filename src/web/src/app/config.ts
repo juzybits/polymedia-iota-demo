@@ -1,5 +1,5 @@
 // app config
-// make sure to update the packageIds if you redeploy the contract
+// update `packageIds` if you redeploy the contract
 
 import { createNetworkConfig } from "@iota/dapp-kit";
 import { getFullnodeUrl } from "@iota/iota-sdk/client";
@@ -7,10 +7,10 @@ import { getFullnodeUrl } from "@iota/iota-sdk/client";
 export const packageIds: Record<SupportedNetwork, string> = {
     testnet: "0x7d770a34c0cac85262108045fa323db26f3cf635cfd18db9812546674f5789a9",
     devnet: "",
-    localnet: "0xeb43edbdf72c952e59a6f456a1c89127a28b56044ffe3c91053f5a59868e09ea",
+    localnet: "",
 };
 
-export const defaultNetwork = "localnet";
+export const defaultNetwork = "testnet";
 
 export const supportedNetworks = ["testnet", "devnet", "localnet"] as const;
 

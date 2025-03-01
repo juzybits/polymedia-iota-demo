@@ -1,3 +1,5 @@
+/// Simple NFT contract.
+/// Anyone can call `new` to create an `Nft` object.
 module demo::nft;
 
 // === imports ===

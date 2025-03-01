@@ -14,8 +14,8 @@
     "scripts": {
         "build": "vite build",
         "clean": "rm -rf dist/ node_modules/ .turbo/ .wrangler/",
-        "deploy-dev": "pnpm build && wrangler pages deploy dist/ --project-name iota-demo --branch dev",
-        "deploy-prod": "pnpm build && wrangler pages deploy dist/ --project-name iota-demo --branch main",
+        "deploy-dev": "pnpm build && wrangler pages deploy dist/ --project-name polymedia-iota-demo --branch dev",
+        "deploy-prod": "pnpm build && wrangler pages deploy dist/ --project-name polymedia-iota-demo --branch main",
         "dev": "vite",
         "host": "vite --host",
         "lint": "eslint src/ --report-unused-disable-directives --max-warnings 0",

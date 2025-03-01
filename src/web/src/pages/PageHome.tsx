@@ -9,7 +9,7 @@ import { toast } from "react-hot-toast";
 import { makeIotaExplorerUrl } from "@polymedia/iota-demo-sdk";
 
 import { Nft } from "../../../sdk/dist/esm/demo-structs";
-import { supportedNetworks } from "../app/config";
+import { packageIds, supportedNetworks } from "../app/config";
 import { useAppContext } from "../app/context";
 import { Btn } from "../comp/buttons";
 import { Header } from "../comp/header";
@@ -77,6 +77,10 @@ const CardSystemState = () =>
 const CardNetwork = () =>
 {
     const { network, setNetwork } = useAppContext();
+    const filteredNetworks = supportedNetworks.filter((n) => !!packageIds[n]);
+    if (filteredNetworks.length <= 1) {
+        return null;
+    }
     return (
         <div className="card compact">
             <div className="card-title">
@@ -85,7 +89,7 @@ const CardNetwork = () =>
             <div className="card-desc">
                 <NetworkRadioSelector
                     selectedNetwork={network}
-                    supportedNetworks={supportedNetworks}
+                    supportedNetworks={filteredNetworks}
                     onSwitch={setNetwork}
                 />
             </div>

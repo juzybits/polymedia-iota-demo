@@ -1,7 +1,8 @@
 import { useCurrentAccount, useDisconnectWallet } from "@iota/dapp-kit";
 import { IotaSystemStateSummary } from "@iota/iota-sdk/client";
 import { IOTA_DECIMALS } from "@iota/iota-sdk/utils";
-import React, { useState } from "react";
+import { useState } from "react";
+import { toast } from "react-hot-toast";
 
 import { supportedNetworks } from "../app/config";
 import { useAppContext } from "../app/context";
@@ -100,6 +101,7 @@ const CardCreateNft = () =>
             description: "The NFT description",
         });
         console.log(resp);
+        toast.success("Success");
     };
 
     return (
@@ -107,22 +109,21 @@ const CardCreateNft = () =>
             <div className="card-title">
                 Create NFT
             </div>
-            {!currAcct
-                ? <Btn onClick={() => Promise.resolve(openConnectModal())}>
-                    Connect
-                </Btn>
-                : <>
-                    <div>Connected: <span className="address">{currAcct.address}</span></div>
-                    <Btn onClick={() => Promise.resolve(disconnect())}>
-                        DISCONNECT
-                    </Btn>
-                </>
-            }
             {currAcct && <>
                 <Btn onClick={createNft}>
                     Create NFT
                 </Btn>
             </>}
+            {!currAcct
+                ? <Btn onClick={() => Promise.resolve(openConnectModal())}>
+                    Connect
+                </Btn>
+                : <>
+                    <Btn onClick={() => Promise.resolve(disconnect())} className="red">
+                        DISCONNECT
+                    </Btn>
+                </>
+            }
         </div>
     );
 };

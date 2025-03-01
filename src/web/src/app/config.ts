@@ -7,7 +7,7 @@ import { getFullnodeUrl } from "@iota/iota-sdk/client";
 export const packageIds: Record<SupportedNetwork, string> = {
     testnet: "0x7d770a34c0cac85262108045fa323db26f3cf635cfd18db9812546674f5789a9",
     devnet: "",
-    localnet: "",
+    localnet: "0xf7323b8c0c3dfca263653f95d2ad3d234b192476040e4787c07bea75e647be36",
 };
 
 export const defaultNetwork = "localnet";

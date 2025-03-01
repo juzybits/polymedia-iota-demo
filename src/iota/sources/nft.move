@@ -19,7 +19,6 @@ public struct Nft has key, store {
     description: String,
 }
 
-// one-time witness
 public struct NFT has drop {}
 
 // === initialization ===

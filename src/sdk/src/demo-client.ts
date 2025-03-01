@@ -1,4 +1,4 @@
-import { DevInspectTransactionBlockParams, IotaClient, IotaTransactionBlockResponse } from "@iota/iota-sdk/client";
+import { DevInspectTransactionBlockParams, IotaClient, IotaTransactionBlockResponse, IotaTransactionBlockResponseOptions } from "@iota/iota-sdk/client";
 import { SignatureWithBytes } from "@iota/iota-sdk/cryptography";
 import { Transaction } from "@iota/iota-sdk/transactions";
 
@@ -12,13 +12,15 @@ export class DemoClient
         public readonly pkgId: string,
     ) {}
 
+    // === package interactions ===
+
     public async createNft(arg: {
         sender: string;
         name: string;
         imageUrl: string;
         description: string;
         dryRun?: boolean;
-    })
+    }): Promise<IotaTransactionBlockResponse>
     {
         const tx = new Transaction();
         const [nft] = tx.moveCall({
@@ -33,10 +35,7 @@ export class DemoClient
         tx.moveCall({
             target: "0x2::transfer::public_transfer",
             typeArguments: [ `${this.pkgId}::nft::Nft` ],
-            arguments: [
-                nft,
-                tx.pure.address(arg.sender),
-            ],
+            arguments: [ nft, tx.pure.address(arg.sender) ],
         });
         const resp = await this.signAndExecuteTx({
             tx,
@@ -46,14 +45,16 @@ export class DemoClient
         return resp;
     }
 
-    // === transactions ===
+    // === transaction helpers ===
 
     public async executeTx({
         signedTx,
+        txRespOptions,
         dryRun = false,
         sender,
     }: {
         signedTx: SignatureWithBytes;
+        txRespOptions?: IotaTransactionBlockResponseOptions;
         dryRun?: boolean;
         sender?: string;
     }): Promise<IotaTransactionBlockResponse>
@@ -64,16 +65,19 @@ export class DemoClient
         const resp = await this.iotaClient.executeTransactionBlock({
             transactionBlock: signedTx.bytes,
             signature: signedTx.signature,
+            options: txRespOptions,
         });
         return resp;
     }
 
     public async signAndExecuteTx({
         tx,
+        txRespOptions,
         dryRun = false,
         sender,
     }: {
         tx: Transaction;
+        txRespOptions?: IotaTransactionBlockResponseOptions;
         dryRun?: boolean;
         sender?: string;
     }): Promise<IotaTransactionBlockResponse>
@@ -83,7 +87,7 @@ export class DemoClient
         }
 
         const signedTx = await this.signTx(tx);
-        const resp = await this.executeTx({ signedTx, sender });
+        const resp = await this.executeTx({ signedTx, txRespOptions, sender });
 
         if (resp.effects && resp.effects.status.status !== "success") {
             throw new Error(`Transaction failed: ${JSON.stringify(resp, null, 2)}`);

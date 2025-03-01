@@ -14,7 +14,7 @@ export const { networkConfig } = createNetworkConfig({
 });
 
 export const packageIds: Record<SupportedNetwork, string> = {
+    testnet: "0x7d770a34c0cac85262108045fa323db26f3cf635cfd18db9812546674f5789a9",
     devnet: "",
-    testnet: "",
-    localnet: "0xd99e0e35f8814ea63570dfd50e07aba2f3a9b1fc180b83f9d99860ebfce4ac40",
+    localnet: "",
 };

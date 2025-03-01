@@ -97,7 +97,7 @@ const CardCreateNft = () =>
             sender: currAcct.address,
             name: "My NFT",
             imageUrl: "https://i.pinimg.com/564x/30/cc/bb/30ccbb7afbc9919f358837a59871910c.jpg",
-            description: "This is a description of my NFT",
+            description: "The NFT description",
         });
         console.log(resp);
     };

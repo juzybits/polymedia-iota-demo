@@ -9,7 +9,7 @@ import { useAppContext } from "../app/context";
 import { Btn } from "../comp/buttons";
 import { Header } from "../comp/header";
 import { NetworkRadioSelector } from "../comp/selectors";
-
+import { InputText } from "../comp/inputs";
 export const PageHome = () =>
 {
     return <>
@@ -90,14 +90,17 @@ const CardCreateNft = () =>
 
     const { demoClient, openConnectModal } = useAppContext();
 
+    const [ name, setName ] = useState("Demo NTF");
+    const [ imageUrl, setImageUrl ] = useState("https://i.pinimg.com/564x/30/cc/bb/30ccbb7afbc9919f358837a59871910c.jpg");
+
     const createNft = async () => {
         if (!currAcct) {
             return;
         }
         const resp = await demoClient.createNft({
             sender: currAcct.address,
-            name: "My NFT",
-            imageUrl: "https://i.pinimg.com/564x/30/cc/bb/30ccbb7afbc9919f358837a59871910c.jpg",
+            name,
+            imageUrl,
             description: "The NFT description",
         });
         console.log(resp);
@@ -109,21 +112,28 @@ const CardCreateNft = () =>
             <div className="card-title">
                 Create NFT
             </div>
-            {currAcct && <>
-                <Btn onClick={createNft}>
-                    Create NFT
-                </Btn>
-            </>}
-            {!currAcct
-                ? <Btn onClick={() => Promise.resolve(openConnectModal())}>
-                    Connect
-                </Btn>
-                : <>
-                    <Btn onClick={() => Promise.resolve(disconnect())} className="red">
-                        DISCONNECT
-                    </Btn>
-                </>
-            }
+            {currAcct ?
+                <div className="form">
+                        <InputText
+                            label="Name"
+                            value={name}
+                            onChange={(e) => setName(e.target.value)}
+                        />
+                        <InputText
+                            label="Image URL"
+                            value={imageUrl}
+                            onChange={(e) => setImageUrl(e.target.value)}
+                        />
+                        <Btn onClick={createNft}>
+                            Create NFT
+                        </Btn>
+                        <Btn onClick={() => Promise.resolve(disconnect())} className="red">
+                            DISCONNECT
+                        </Btn>
+                </div>
+            : <Btn onClick={() => Promise.resolve(openConnectModal())}>
+                Connect
+            </Btn>}
         </div>
     );
 };

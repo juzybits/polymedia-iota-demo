@@ -1,14 +1,17 @@
+// the app itself
+// read the file from top to bottom to see how the app gets bootstrapped
+
 import { ConnectModal, IotaClientProvider, useIotaClient, useSignTransaction, WalletProvider } from "@iota/dapp-kit";
 import "@iota/dapp-kit/dist/index.css";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { useMemo, useState } from "react";
 import { Toaster } from "react-hot-toast";
-import { BrowserRouter, Link, Outlet, Route, Routes } from "react-router-dom";
+import { BrowserRouter, Outlet, Route, Routes } from "react-router-dom";
 
 import { DemoClient } from "@polymedia/iota-demo-sdk";
 
 import { defaultNetwork, networkConfig, packageIds, SupportedNetwork } from "./config";
-import { AppContext, AppContextType, useAppContext } from "./context";
+import { AppContext } from "./context";
 import { PageHome } from "../pages/PageHome";
 import { PageNotFound } from "../pages/PageNotFound";
 import "../styles/App.less";
@@ -46,6 +49,13 @@ const AppIotaProviders = () =>
 
 // ==== app ====
 
+export type AppContextType = {
+    network: SupportedNetwork;
+    setNetwork: (network: SupportedNetwork) => void;
+    openConnectModal: () => void;
+    demoClient: DemoClient;
+};
+
 const App = ({
     network,
     setNetwork,
@@ -72,7 +82,6 @@ const App = ({
     const appContext: AppContextType = {
         network, setNetwork,
         openConnectModal: () => { setShowConnectModal(true); },
-        header: <Header />,
         demoClient,
     };
 
@@ -81,7 +90,7 @@ const App = ({
     return (
     <AppContext.Provider value={appContext}>
         <div id="layout">
-            <Outlet /> {/* Loads a Page*.tsx */}
+            <Outlet /> {/* loads a pages/Page*.tsx */}
             <ConnectModal
                 trigger={<></>}
                 open={showConnectModal}
@@ -91,18 +100,4 @@ const App = ({
         </div>
     </AppContext.Provider>
     );
-};
-
-const Header = () =>
-{
-    const { network } = useAppContext();
-    return (
-    <header>
-        <div className="header-item">
-            <Link to="/">
-                IOTA DEMO
-                <span className="header-network-label">{network}</span>
-            </Link>
-        </div>
-    </header>);
 };

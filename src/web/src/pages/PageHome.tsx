@@ -2,17 +2,17 @@ import { useCurrentAccount, useDisconnectWallet } from "@iota/dapp-kit";
 import { IotaSystemStateSummary } from "@iota/iota-sdk/client";
 import { IOTA_DECIMALS } from "@iota/iota-sdk/utils";
 import React, { useState } from "react";
+
 import { supportedNetworks } from "../app/config";
 import { useAppContext } from "../app/context";
 import { Btn } from "../comp/buttons";
+import { Header } from "../comp/header";
 import { NetworkRadioSelector } from "../comp/selectors";
 
 export const PageHome = () =>
 {
-    const { header } = useAppContext();
-
     return <>
-        {header}
+        <Header />
         <div id="page-home" className="page-regular">
             <div className="page-content">
                 <CardSystemState />
@@ -125,23 +125,4 @@ const CardCreateNft = () =>
             </>}
         </div>
     );
-};
-
-/**
- * An external link like:
- * `<a target='_blank' rel='noopener noreferrer nofollow' href={href}>{text}</a>`
- */
-export const LinkExternal: React.FC<React.AnchorHTMLAttributes<HTMLAnchorElement> & {
-    follow?: boolean;
-    children: React.ReactNode;
-}> = ({
-    follow = true,
-    children,
-    ...props
-}) => {
-    const target = props.target ?? "_blank";
-    const rel = props.rel ?? `noopener noreferrer ${follow ? "" : "nofollow"}`;
-    return <a {...props} target={target} rel={rel}>
-        {children}
-    </a>;
 };

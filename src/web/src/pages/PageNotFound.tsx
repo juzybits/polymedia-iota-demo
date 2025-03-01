@@ -1,10 +1,9 @@
-import { useAppContext } from "../app/context";
+import { Header } from "../comp/header";
 
 export const PageNotFound = () =>
 {
-    const { header } = useAppContext();
     return <>
-        {header}
+        <Header />
         <div id="page-not-found" className="page-regular">
             <div className="page-content">
                 <div className="page-title">

@@ -4,6 +4,9 @@ import { Transaction } from "@iota/iota-sdk/transactions";
 
 import { SignTx } from "./lib.js";
 
+/**
+ * A client to interact with the demo IOTA contract.
+ */
 export class DemoClient
 {
     constructor(
@@ -12,8 +15,11 @@ export class DemoClient
         public readonly pkgId: string,
     ) {}
 
-    // === package interactions ===
+    // === contract interactions ===
 
+    /**
+     * Call nft::new() and transfer the object to the sender.
+     */
     public async createNft(arg: {
         sender: string;
         name: string;
@@ -85,14 +91,8 @@ export class DemoClient
         if (dryRun) {
             return await this.dryRunTx({ tx, sender });
         }
-
         const signedTx = await this.signTx(tx);
         const resp = await this.executeTx({ signedTx, txRespOptions, sender });
-
-        if (resp.effects && resp.effects.status.status !== "success") {
-            throw new Error(`Transaction failed: ${JSON.stringify(resp, null, 2)}`);
-        }
-
         return resp;
     }
 
@@ -108,9 +108,6 @@ export class DemoClient
             sender,
             transactionBlock: tx,
         });
-        if (resp.effects && resp.effects.status.status !== "success") {
-            throw new Error(`Transaction failed: ${JSON.stringify(resp, null, 2)}`);
-        }
         return { digest: "", ...resp };
     }
 }

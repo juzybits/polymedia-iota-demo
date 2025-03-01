@@ -7,9 +7,7 @@ import { Transaction } from "@iota/iota-sdk/transactions";
  * For apps that use `@iota/dapp-kit` to sign with an wallet:
     ```
     const { mutateAsync: walletSignTx } = useSignTransaction();
-    const signTx: SignTx = async (tx) => {
-        return walletSignTx({ transaction: tx });
-    };
+    const signTx: SignTx = (tx) => walletSignTx({ transaction: tx });
     ```
  * For code that has direct access to the private key:
     ```

@@ -1,21 +1,18 @@
 import { SupportedNetwork } from "../app/config";
 
-export type RadioOption<T extends string> = {
+type RadioOption<T extends string> = {
     value: T;
     label: React.ReactNode;
 };
 
-export type RadioSelectorProps<T extends string> = {
+type RadioSelectorProps<T extends string> = {
     options: RadioOption<T>[];
     selectedValue: T;
     onSelect: (value: T) => void;
     className?: string;
 };
 
-/**
- * A generic radio button menu.
- */
-export function RadioSelector<T extends string>({
+function RadioSelector<T extends string>({
     options,
     selectedValue,
     onSelect,
